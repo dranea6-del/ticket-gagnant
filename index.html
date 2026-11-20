@@ -198,8 +198,12 @@ canvas.foil{position:absolute;inset:0;width:100%;height:100%;touch-action:none;t
 .confetti{position:absolute;top:-40px;width:22px;height:34px;opacity:.9;animation:tombe linear infinite}
 @keyframes tombe{to{transform:translateY(2050px) rotate(720deg)}}
 
-.sonBtn{position:absolute;top:40px;right:40px;width:110px;height:110px;border-radius:50%;border:4px solid rgba(255,255,255,.4);background:rgba(255,255,255,.08);font-size:56px;z-index:5;cursor:pointer}
+.sonBtn{position:absolute;bottom:36px;right:40px;border-radius:999px;border:2px solid rgba(255,255,255,.35);background:none;color:#fff;font:inherit;font-size:26px;padding:12px 28px;opacity:.55;z-index:5;cursor:pointer}
+.sonBtn span{font-size:26px}.sonBtn.off{opacity:1;background:var(--rouge);border-color:#fff}
 .resetBtn{position:absolute;bottom:36px;left:40px;font:inherit;font-size:26px;color:#fff;opacity:.45;background:none;border:2px solid rgba(255,255,255,.35);border-radius:999px;padding:14px 28px;z-index:5;cursor:pointer}
+.homeBtn{border:2px solid rgba(255,255,255,.35);background:rgba(255,255,255,.08);color:#fff;font:inherit;font-size:30px;font-weight:700;border-radius:999px;padding:12px 26px;cursor:pointer;white-space:nowrap}
+.passer{margin-top:26px;border:3px dashed rgba(255,255,255,.4);background:none;color:var(--creme);font:inherit;font-size:34px;font-weight:700;border-radius:999px;padding:18px 40px;cursor:pointer;opacity:.8}
+.passer[hidden]{display:none}
 /* ---------- Surcouches ---------- */
 .over{position:absolute;inset:0;background:rgba(5,10,25,.9);display:none;align-items:center;justify-content:center;flex-direction:column;gap:40px;z-index:50;text-align:center;padding:60px}
 .over.on{display:flex}
@@ -237,7 +241,7 @@ canvas.foil{position:absolute;inset:0;width:100%;height:100%;touch-action:none;t
 
 <!-- 3. PLAN -->
 <section class="screen" id="map">
-  <div class="topbar"><span class="pill" id="mapEq"></span><span class="pill">Score : <b id="mapScore">0</b></span></div>
+  <div class="topbar"><button class="homeBtn">🏠 Accueil</button><span class="pill" id="mapEq"></span><span class="pill">Score : <b id="mapScore">0</b></span></div>
   <h2 id="mapTitre">Choisissez une étape</h2>
   <div class="consigne" id="mapConsigne"></div>
   <div id="mapwrap">
@@ -251,13 +255,14 @@ canvas.foil{position:absolute;inset:0;width:100%;height:100%;touch-action:none;t
 
 <!-- 4. QUI SUIS-JE -->
 <section class="screen" id="jeu">
-  <div class="topbar"><span class="pill" id="jeuEq"></span><span class="pill">Score : <b id="jeuScore">0</b></span></div>
+  <div class="topbar"><button class="homeBtn">🏠 Accueil</button><span class="pill" id="jeuEq"></span><span class="pill">Score : <b id="jeuScore">0</b></span></div>
   <div class="bandeau" id="jeuBandeau"></div>
   <h2>Qui suis-je ?</h2>
   <div class="regle">Une pionnière du numérique vous attend ici.<br>Grattez <b>le moins d'indices possible</b>, puis répondez.</div>
   <div class="indices" id="indices"></div>
   <div class="aide" id="aide"></div>
   <div class="choix lock" id="choix"></div>
+  <button class="passer" id="passerQSJ">⏭ Passer cette énigme (0 point)</button>
 </section>
 
 <!-- 5. RÉVÉLATION -->
@@ -274,7 +279,7 @@ canvas.foil{position:absolute;inset:0;width:100%;height:100%;touch-action:none;t
 
 <!-- 6. QUESTIONS -->
 <section class="screen" id="quiz">
-  <div class="topbar"><span class="pill" id="qEq"></span><span class="pill">Score : <b id="qScore">0</b></span></div>
+  <div class="topbar"><button class="homeBtn">🏠 Accueil</button><span class="pill" id="qEq"></span><span class="pill">Score : <b id="qScore">0</b></span></div>
   <div class="bandeau" id="qBandeau" style="height:170px"></div>
   <div class="etat"><span class="dots" id="dots"></span><span class="etoiles" id="etoiles"></span></div>
   <div class="typeq" id="typeq"></div>
@@ -282,6 +287,7 @@ canvas.foil{position:absolute;inset:0;width:100%;height:100%;touch-action:none;t
   <div id="zoneRep"></div>
   <div class="verif" id="verif"><div class="in" id="verifIn"></div><canvas class="foil" width="980" height="420"></canvas></div>
   <div class="explic" id="explic"></div>
+  <button class="passer" id="passerQ">⏭ Passer cette question (0 point)</button>
   <button class="btn" id="btnQ">Suivant ➜</button>
 </section>
 
@@ -338,8 +344,8 @@ canvas.foil{position:absolute;inset:0;width:100%;height:100%;touch-action:none;t
   <button class="btn" id="btnImpOk">Voir notre carte postale ✉️</button>
 </div>
 <div class="over" id="idle"><div class="q">Vous êtes toujours là ?</div><div class="n" id="idleN">15</div><div class="s">Touchez l'écran pour continuer la partie</div></div>
-<div class="over" id="confirmStop"><div class="q">Terminer la partie ?</div><div class="s">Le score actuel sera enregistré dans le classement.</div>
-  <div class="row"><button class="btn alt" id="stopNon">Continuer</button><button class="btn" id="stopOui">Terminer</button></div></div>
+<div class="over" id="confirmStop"><div class="q" id="stopTitre">Terminer la partie ?</div><div class="s">Le score actuel sera enregistré dans le classement.</div>
+  <div class="row"><button class="btn alt" id="stopNon">Continuer à jouer</button><button class="btn" id="stopOui">Terminer et quitter</button></div></div>
 <div class="over" id="admin"><div class="q">Espace animateur</div><div class="s">Effacer tous les scores et le classement du salon ?<br><span style="font-size:32px;opacity:.7">Cette action est définitive.</span></div>
   <div class="row"><button class="btn alt" id="admNon">Annuler</button><button class="btn" id="admOui">Effacer</button></div></div>
 </div>
@@ -2827,7 +2833,8 @@ const MAX_SCORE = LIEUX.reduce((t,L) => t + CONFIG.ptsQuiSuisJe[0] + L.q.reduce(
    SONS — générés par le navigateur (aucun fichier, hors-ligne)
    ====================================================== */
 let AC = null, sonOn = CONFIG.son, bruit = null, dernierGratte = 0;
-try{ const v = localStorage.getItem("ticketGagnant_son"); if(v !== null) sonOn = v === "1"; }catch(e){}
+/* Le son est réactivé à chaque ouverture du jeu (la coupure ne dure que jusqu'au rechargement) */
+try{ localStorage.removeItem("ticketGagnant_son"); }catch(e){}
 function ac(){
   if(!sonOn) return null;
   try{
@@ -2866,9 +2873,12 @@ const SON = {
   },
   fin(){ [784, 659, 784, 1047].forEach((f,i) => note(f, i*.15, .4, "triangle", .22)); }
 };
-function majSonBtn(){ $("#sonBtn").textContent = sonOn ? "🔊" : "🔇"; }
+function majSonBtn(){ $("#sonBtn").innerHTML = sonOn ? "🔊 <span>Son activé</span>" : "🔇 <span>Son coupé</span>"; $("#sonBtn").classList.toggle("off", !sonOn); }
 majSonBtn();
-$("#sonBtn").addEventListener("pointerdown", e => { e.stopPropagation(); sonOn = !sonOn; try{ localStorage.setItem("ticketGagnant_son", sonOn ? "1" : "0"); }catch(err){} majSonBtn(); if(sonOn) SON.tic(); });
+$("#sonBtn").addEventListener("pointerdown", e => e.stopPropagation());
+$("#sonBtn").addEventListener("click", e => { e.stopPropagation(); sonOn = !sonOn; majSonBtn(); if(sonOn) SON.tic(); });
+/* Déverrouille l'audio au premier geste (exigence des navigateurs) */
+["pointerup","click","touchend","keydown"].forEach(ev => document.addEventListener(ev, () => ac(), { capture:true, passive:true }));
 $("#sonBtn").addEventListener("pointerup", e => e.stopPropagation());
 $("#resetBtn").addEventListener("pointerdown", e => { e.stopPropagation(); $("#admin").classList.add("on"); });
 $("#resetBtn").addEventListener("pointerup", e => e.stopPropagation());
@@ -2954,7 +2964,11 @@ function renderMap(){
   $("#jauge").innerHTML = `🎯 Défi goodie : <b>${fmt(S.score)}</b> / ${fmt(CONFIG.seuilGoodie)} points<div class="barre"><i style="width:${pc}%"></i></div>`;
   majEntetes();
 }
-$("#btnStop").onclick = () => $("#confirmStop").classList.add("on");
+$("#btnStop").onclick = () => { $("#stopTitre").textContent = "Terminer la partie ?"; $("#confirmStop").classList.add("on"); };
+document.querySelectorAll(".homeBtn").forEach(b => b.onclick = () => {
+  if(!S || (S.score === 0 && S.faits.length === 0)){ accueil(); return; }
+  $("#stopTitre").textContent = "Revenir à l'accueil ?"; $("#confirmStop").classList.add("on");
+});
 $("#stopNon").onclick = () => $("#confirmStop").classList.remove("on");
 $("#stopOui").onclick = () => { $("#confirmStop").classList.remove("on"); finPartie(); };
 
@@ -2993,7 +3007,7 @@ function grattable(cv, texte, { onStart, onDone, peutCommencer } = {}){
 /* ---------- Qui suis-je ---------- */
 let Q = null;
 function ouvrir(L){
-  Q = { L, grattes:new Set(), repondu:false };
+  Q = { L, grattes:new Set(), repondu:false }; $("#passerQSJ").hidden = false;
   majEntetes(); bandeau($("#jeuBandeau"), L, L.pourquoi);
   $("#aide").textContent = "Commencez par gratter l'indice n°1 avec le doigt 👆";
   const box = $("#indices"); box.innerHTML = "";
@@ -3017,6 +3031,7 @@ function ouvrir(L){
 function repondreQSJ(btn, nom){
   if(Q.repondu) return; Q.repondu = true;
   const ok = nom === Q.L.nom, nb = Math.max(1, Q.grattes.size), pts = ok ? CONFIG.ptsQuiSuisJe[nb-1] : 0;
+  $("#passerQSJ").hidden = true;
   btn.classList.add(ok ? "bon" : "faux"); ok ? SON.bon() : SON.faux();
   [...$("#choix").children].forEach(b => { if(b.textContent === Q.L.nom) b.classList.add("bon"); });
   $("#choix").classList.add("lock");
@@ -3031,6 +3046,20 @@ function repondreQSJ(btn, nom){
     show("reveal");
   }, 1100);
 }
+$("#passerQSJ").onclick = () => {
+  if(Q.repondu) return; Q.repondu = true; Q.passe = true;
+  $("#choix").classList.add("lock");
+  [...$("#choix").children].forEach(b => { if(b.textContent === Q.L.nom) b.classList.add("bon"); });
+  Q.qsj = false; Q.bonnes = 0;
+  setTimeout(() => {
+    const L = Q.L;
+    $("#verdict").textContent = "⏭ Énigme passée"; $("#verdict").style.color = "var(--or2)";
+    $("#revEmb").innerHTML = emb(L); $("#revNom").textContent = L.nom; $("#revDates").textContent = L.dates;
+    $("#revTxt").textContent = L.texte; $("#revAuj").innerHTML = L.auj;
+    $("#gain").textContent = "+ 0 point… mais vous la connaissez maintenant !";
+    show("reveal");
+  }, 700);
+};
 $("#btnVersQuiz").onclick = () => { Q.i = 0; Q.res = []; question(); };
 
 /* ---------- Questions ---------- */
@@ -3043,7 +3072,7 @@ function question(){
   $("#typeq").textContent = { qcm:"QUESTION " + (Q.i+1) + " / 4", vf:"VRAI OU FAUX ? · " + (Q.i+1) + " / 4", ordre:"REMETTEZ DANS L'ORDRE · " + (Q.i+1) + " / 4" }[q.t];
   $("#enonce").textContent = q.q;
   $("#explic").classList.remove("on"); $("#verif").classList.remove("on");
-  $("#btnQ").style.visibility = "hidden";
+  $("#btnQ").style.visibility = "hidden"; $("#passerQ").hidden = false; Q.qFinie = false;
   const z = $("#zoneRep"); z.innerHTML = "";
   if(q.t === "qcm"){
     const c = document.createElement("div"); c.className = "choix";
@@ -3058,7 +3087,7 @@ function question(){
     const c = document.createElement("div"); c.className = "vf";
     c.innerHTML = `<button class="v">VRAI</button><button class="f">FAUX</button>`;
     c.querySelectorAll("button").forEach((b,k) => b.onclick = () => {
-      c.classList.add("lock"); b.classList.add("choisi");
+      c.classList.add("lock"); b.classList.add("choisi"); $("#passerQ").hidden = true;
       const ok = (k === 0) === q.r;
       $("#verifIn").innerHTML = `<div class="res" style="color:${ok?"var(--vert)":"var(--rouge)"}">${ok ? "✔ Bonne réponse !" : "✘ Raté !"}</div><div class="exp">${q.e}</div>`;
       $("#verif").classList.add("on");
@@ -3088,15 +3117,27 @@ function question(){
   }
   show("quiz");
 }
-function finQuestion(ok, dejaExplique){
+function finQuestion(ok, dejaExplique, passee){
+  if(Q.qFinie) return; Q.qFinie = true; $("#passerQ").hidden = true;
   const q = Q.L.q[Q.i];
-  if(!dejaExplique) ok ? SON.bon() : SON.faux();
+  if(!dejaExplique && !passee) ok ? SON.bon() : SON.faux();
   Q.res[Q.i] = ok; if(ok){ S.score += CONFIG.ptsDifficulte[q.d]; Q.bonnes++; }
   majEntetes();
-  if(!dejaExplique){ $("#explic").innerHTML = (ok ? "✔ <b>Bonne réponse !</b> " : "✘ <b>Raté…</b> ") + q.e; $("#explic").classList.add("on"); }
+  if(!dejaExplique){ $("#explic").innerHTML = (passee ? "⏭ <b>Question passée.</b> La réponse : " : ok ? "✔ <b>Bonne réponse !</b> " : "✘ <b>Raté…</b> ") + q.e; $("#explic").classList.add("on"); }
   $("#btnQ").textContent = Q.i < Q.L.q.length - 1 ? "Question suivante ➜" : "Valider l'étape ✓";
   $("#btnQ").style.visibility = "visible";
 }
+$("#passerQ").onclick = () => {
+  if(Q.qFinie) return;
+  document.querySelectorAll("#zoneRep .choix, #zoneRep .vf").forEach(c => c.classList.add("lock"));
+  document.querySelectorAll("#zoneRep .ordre").forEach(c => c.classList.add("fin"));
+  document.querySelectorAll("#zoneRep .ordre-actions").forEach(a => a.style.display = "none");
+  const q = Q.L.q[Q.i];
+  if(q.t === "qcm") document.querySelectorAll("#zoneRep .choix button").forEach(b => { if(b.textContent === q.o[q.r]) b.classList.add("bon"); });
+  if(q.t === "vf") document.querySelector(q.r ? "#zoneRep .vf .v" : "#zoneRep .vf .f").classList.add("choisi");
+  $("#verif").classList.remove("on");
+  finQuestion(false, false, true);
+};
 $("#btnQ").onclick = () => {
   if(Q.i < Q.L.q.length - 1){ Q.i++; question(); return; }
   S.faits.push(Q.L.id); S.resultats.push({ L:Q.L, ok:Q.qsj });
