@@ -54,7 +54,8 @@ h1,h2,h3{font-family:"Arial Black","Trebuchet MS",sans-serif}
 .rang{display:flex;gap:14px;justify-content:center}
 .k{width:88px;height:110px;border-radius:20px;border:none;background:var(--nuit2);color:var(--creme);font:inherit;font-size:48px;font-weight:800;box-shadow:0 6px 0 #0a1430;cursor:pointer}
 .k:active{transform:translateY(5px);box-shadow:none}
-.k.l{width:200px;font-size:34px}.k.xl{width:480px;font-size:34px}
+.k.l{width:200px;font-size:34px}
+.rang:nth-child(4){gap:10px}.rang:nth-child(4) .k{width:72px;height:90px;font-size:38px}.k.xl{width:480px;font-size:34px}
 .k.or{background:var(--or);color:var(--encre);box-shadow:0 6px 0 #b67d14}
 .eq-actions{display:flex;gap:30px;margin-top:50px}
 
@@ -198,6 +199,7 @@ canvas.foil{position:absolute;inset:0;width:100%;height:100%;touch-action:none;t
 @keyframes tombe{to{transform:translateY(2050px) rotate(720deg)}}
 
 .sonBtn{position:absolute;top:40px;right:40px;width:110px;height:110px;border-radius:50%;border:4px solid rgba(255,255,255,.4);background:rgba(255,255,255,.08);font-size:56px;z-index:5;cursor:pointer}
+.resetBtn{position:absolute;bottom:36px;left:40px;font:inherit;font-size:26px;color:#fff;opacity:.45;background:none;border:2px solid rgba(255,255,255,.35);border-radius:999px;padding:14px 28px;z-index:5;cursor:pointer}
 /* ---------- Surcouches ---------- */
 .over{position:absolute;inset:0;background:rgba(5,10,25,.9);display:none;align-items:center;justify-content:center;flex-direction:column;gap:40px;z-index:50;text-align:center;padding:60px}
 .over.on{display:flex}
@@ -213,6 +215,7 @@ canvas.foil{position:absolute;inset:0;width:100%;height:100%;touch-action:none;t
 <!-- 1. ACCUEIL -->
 <section class="screen on" id="attract">
   <button class="sonBtn" id="sonBtn">🔊</button>
+  <button class="resetBtn" id="resetBtn">🗑️ Effacer les scores</button>
   <div class="logo" id="logoTitre"></div>
   <div class="ticket">Lille · Numérique · IA<div class="foil">✦ GRATTE ✦</div></div>
   <div class="defi" id="defiAcc"></div>
@@ -337,7 +340,7 @@ canvas.foil{position:absolute;inset:0;width:100%;height:100%;touch-action:none;t
 <div class="over" id="idle"><div class="q">Vous êtes toujours là ?</div><div class="n" id="idleN">15</div><div class="s">Touchez l'écran pour continuer la partie</div></div>
 <div class="over" id="confirmStop"><div class="q">Terminer la partie ?</div><div class="s">Le score actuel sera enregistré dans le classement.</div>
   <div class="row"><button class="btn alt" id="stopNon">Continuer</button><button class="btn" id="stopOui">Terminer</button></div></div>
-<div class="over" id="admin"><div class="q">Espace animateur</div><div class="s">Effacer le classement du salon ?</div>
+<div class="over" id="admin"><div class="q">Espace animateur</div><div class="s">Effacer tous les scores et le classement du salon ?<br><span style="font-size:32px;opacity:.7">Cette action est définitive.</span></div>
   <div class="row"><button class="btn alt" id="admNon">Annuler</button><button class="btn" id="admOui">Effacer</button></div></div>
 </div>
 
@@ -2649,7 +2652,7 @@ var qrcode = function() {
 const CONFIG = {
   titre: "Le Ticket<br>gagnant",
   sousTitre: "Le grand tour numérique de Lille",
-  ressourceURL: "https://forge.apps.education.fr",   // lien du QR code final
+  ressourceURL: "https://dane.site.ac-lille.fr",   // lien du QR code final
   seuilGoodie: 7500,         // défi volontairement difficile (max possible : 8 300)         // points à atteindre pour gagner un goodie
   ptsQuiSuisJe: [300, 200, 100],   // selon le nombre d'indices grattés
   ptsDifficulte: {1:100, 2:200, 3:300},
@@ -2867,6 +2870,8 @@ function majSonBtn(){ $("#sonBtn").textContent = sonOn ? "🔊" : "🔇"; }
 majSonBtn();
 $("#sonBtn").addEventListener("pointerdown", e => { e.stopPropagation(); sonOn = !sonOn; try{ localStorage.setItem("ticketGagnant_son", sonOn ? "1" : "0"); }catch(err){} majSonBtn(); if(sonOn) SON.tic(); });
 $("#sonBtn").addEventListener("pointerup", e => e.stopPropagation());
+$("#resetBtn").addEventListener("pointerdown", e => { e.stopPropagation(); $("#admin").classList.add("on"); });
+$("#resetBtn").addEventListener("pointerup", e => e.stopPropagation());
 document.addEventListener("click", e => { if(e.target.closest(".btn, .k, .lieu, .choix button, .ordre button, .vf button")) SON.tic(); }, true);
 
 /* ---------- Classement (stocké dans le navigateur du totem) ---------- */
@@ -2904,11 +2909,11 @@ $("#attract").addEventListener("pointerup", e => {
   clearTimeout(pressAdmin); pressAdmin = null; ouvrirEquipe();
 });
 $("#admNon").onclick = () => $("#admin").classList.remove("on");
-$("#admOui").onclick = () => { ecrireLb([]); $("#admin").classList.remove("on"); accueil(); };
+$("#admOui").onclick = () => { ecrireLb([]); try{ localStorage.removeItem("gratteLilleRecord"); }catch(e){} $("#admin").classList.remove("on"); accueil(); };
 
 /* ---------- Nom d'équipe ---------- */
 let nomEq = "";
-const RANGS = ["AZERTYUIOP","QSDFGHJKLM","WXCVBN'-"];
+const RANGS = ["AZERTYUIOP","QSDFGHJKLM","WXCVBNÉÈÀÇ","'-0123456789"];
 (function clavier(){
   const c = $("#clavier");
   RANGS.forEach(r => { const d=document.createElement("div"); d.className="rang"; [...r].forEach(ch => { const b=document.createElement("button"); b.className="k"; b.textContent=ch; b.onclick=()=>tape(ch); d.appendChild(b); }); c.appendChild(d); });
@@ -2920,6 +2925,13 @@ const RANGS = ["AZERTYUIOP","QSDFGHJKLM","WXCVBN'-"];
 function tape(ch){ if(nomEq.length >= 20) return; nomEq += (nomEq.length && nomEq.slice(-1) !== " " && nomEq.slice(-1) !== "-" && nomEq.slice(-1) !== "'") ? ch.toLowerCase() : ch; majNom(); }
 function majNom(){ $("#champ").innerHTML = esc(nomEq) + '<span class="curseur"></span>'; $("#btnGo").disabled = nomEq.trim().length < 2; }
 function ouvrirEquipe(){ nomEq = ""; majNom(); show("equipe"); }
+/* Clavier physique (tests sur ordinateur) */
+document.addEventListener("keydown", e => {
+  if(current !== "equipe") return;
+  if(e.key === "Backspace"){ nomEq = nomEq.slice(0,-1); majNom(); e.preventDefault(); return; }
+  if(e.key === "Enter"){ if(!$("#btnGo").disabled) $("#btnGo").click(); return; }
+  if(e.key.length === 1 && /[\p{L}\p{N} '\-]/u.test(e.key) && nomEq.length < 20){ nomEq += e.key; majNom(); e.preventDefault(); }
+});
 $("#btnHasard").onclick = () => { nomEq = NOMS_HASARD[Math.floor(Math.random()*NOMS_HASARD.length)]; majNom(); };
 $("#btnGo").onclick = () => { SON.depart(); S = { equipe:nomEq.trim(), score:0, faits:[], resultats:[] }; renderMap(); show("map"); };
 
